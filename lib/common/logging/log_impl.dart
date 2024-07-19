@@ -1,6 +1,7 @@
 import 'package:logger/logger.dart';
-import './log.dart';
+
 import '../configs/configs.dart';
+import './log.dart';
 
 
 class LogImpl implements Log {

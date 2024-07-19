@@ -1,67 +1,95 @@
+// import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
+import '../blocs/connectivity/connectivity_bloc.dart';
+import '../blocs/language/language_bloc.dart';
+import '../blocs/launching/launching_bloc.dart';
+import '../blocs/loader/loader_bloc.dart';
+import '../blocs/session/session_bloc.dart';
+import '../blocs/show_message/show_message_bloc.dart';
+import '../common/common.dart';
+import '../constants/screens.dart';
+import '../global/app_route_observer.dart';
+import '../global/app_routing.dart';
+import '../global/localization.dart';
 import '../theme/default_theme.dart';
-
-// import 'features/routes.dart';
-// import 'theme/theme.dart';
+import 'app/app_showing/app_showing.dart';
+import 'routes.dart';
 
 class Application extends StatelessWidget {
-  const Application({Key? key}) : super(key: key);
+  const Application({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: DefaultTheme().build(context),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<LanguageBloc>(create: (_) => LanguageBloc.instance()),
+          BlocProvider<ConnectivityBloc>(
+            create: (_) =>
+                ConnectivityBloc.instance()..add(ConnectivityChecked()),
+          ),
+          BlocProvider<LoaderBloc>(create: (_) => LoaderBloc.instance()),
+          BlocProvider<ShowMessageBloc>(
+              create: (_) => ShowMessageBloc.instance()),
+                      BlocProvider<LaunchingBloc>(
+          create: (_) =>
+              LaunchingBloc.instance()..add(LaunchingPreloadDataStarted()),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+          BlocProvider<SessionBloc>(create: (_) => SessionBloc.instance()),
+        ],
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<SessionBloc, SessionState>(
+              listenWhen: (previous, current) =>
+                  current is SessionUserReadyToSetUpMessasing ||
+                  current is SessionSignOutSuccess,
+              listener: (_, state) async {
+                log.info('Session State >> $state');
+                if (state is SessionUserReadyToSetUpMessasing) {
+                  await Future.delayed(const Duration(seconds: 1));
+
+                  // start to subscribe all user's topics
+                } else if (state is SessionSignOutSuccess) {
+                  AppRouting().pushReplacementNamed(Screens.logIn);
+                }
+              },
+            )
+          ],
+          child: BlocBuilder<LanguageBloc, LanguageState>(
+            buildWhen: (previousState, state) {
+              return state is LanguageInitial || state is LanguageUpdateSuccess;
+            },
+            builder: (_, languageState) {
+              return MaterialApp.router(
+              routeInformationParser: const QRouteInformationParser(),
+              routerDelegate: QRouterDelegate(
+                AppRouter.allRoutes(),
+                observers: [
+                  AppRouteObserver(),
+                ],
+                initPath: Screens.splash,
+              ),
+              localizationsDelegates: const [
+                SLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: languageState.supportedLocales,
+              locale: languageState.locale,
+              title: 'Boilerplate Web App',
+              theme: DefaultTheme().build(context),
+              debugShowCheckedModeBanner: false,
+              restorationScopeId: 'Boilerplate Web App',
+              builder: (context, child) => AppShowing(app: child!),
+              scaffoldMessengerKey: AppRouting().scaffoldMessengerState,
+              );
+            },
+          ),
+        ));
   }
 }

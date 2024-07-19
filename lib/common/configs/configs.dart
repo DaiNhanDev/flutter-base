@@ -1,3 +1,5 @@
+import '../common.dart';
+
 class Configs {
   static final Configs _singleton = Configs._internal();
 
@@ -12,7 +14,7 @@ class Configs {
           }
         });
       } catch (e) {
-        // log.error('Error >> $e');
+        log.error('Error >> $e');
         _singleton._configs = {};
       }
     }
@@ -22,5 +24,7 @@ class Configs {
   Configs._internal();
   dynamic _configs;
 
+  String get baseUrl => _configs['BASE_URL'] ?? 'http://example.com';
   String get logLevel => _configs['LOG_LEVEL'] ?? 'error';
+  String get supportedLanguages => _configs['SUPPORTED_LANGUAGES'] ?? 'en,vi';
 }

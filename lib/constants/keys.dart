@@ -2,6 +2,8 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../models/badge_type.dart';
+
 class Keys {
   static _Blocs get Blocs => _Blocs();
 }
@@ -30,6 +32,6 @@ class _Blocs {
   final Key sessionBloc = const Key('session_bloc');
   final Key launchingBloc = const Key('launching_bloc');
 
-  // Key badgeNumberBlocKey(BadgeType type) =>
-  //     Key('badge_number_bloc_${type.toKey()}');
+  Key badgeNumberBlocKey(BadgeType type) =>
+      Key('badge_number_bloc_${type.toKey()}');
 }
