@@ -4,12 +4,15 @@ import '../../constants/app_context.dart';
 import '../../constants/strings.dart';
 import '../../global/localization.dart';
 import '../../models/badge_type.dart';
-import '../auth/login/login.screen.dart';
+import '../account/account_screen.dart';
+import '../home/home_screen.dart';
 import '../landing/landing_screen.dart';
+import '../options/options_screen.dart';
 import '../splash/splash_screen.dart';
 import 'tabbar_icon.dart';
 
 enum BottomTabbar { home, options, account }
+
 typedef OnNavigateToTab = void Function(BottomTabbar tab,
     {Map<String, dynamic> params});
 
@@ -27,11 +30,11 @@ extension BottomTabbarExtension on BottomTabbar {
   Widget toScreen({OnNavigateToTab? onNavigateToTab}) {
     switch (this) {
       case BottomTabbar.home:
-        return const LogInScreen();
+        return const HomeScreen();
       case BottomTabbar.options:
-        return const SplashScreen();
+        return const OptionsScreen();
       case BottomTabbar.account:
-        return const LandingScreen();
+        return const AccountScreen();
     }
   }
 

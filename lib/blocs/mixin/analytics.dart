@@ -1,4 +1,3 @@
-
 import '../../global/app_analytics.dart';
 import '../../models/authorization.dart';
 import '../../models/user.dart';
