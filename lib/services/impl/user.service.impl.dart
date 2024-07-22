@@ -22,7 +22,9 @@ class UserServiceImpl implements UserService {
     final user = User(userId: '', name: '', gender: Gender.male);
 
     final authorization = Authorization(
-      accessToken: 'access_token'
+      accessToken: 'access_token',
+      refreshToken: 'refreshToken', 
+      shopId: ''
     );
     Repository().authorization = authorization;
 

@@ -44,8 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
         listeners: [
           BlocListener<LaunchingBloc, LaunchingState>(
             listener: (_, state) {
-              print('====>LaunchingState: $state');
               if (state is LaunchingPreloadDataSuccess) {
+                print('====>LaunchingState: $state');
+
                 EventBus().event<SessionBloc>(
                     Keys.Blocs.sessionBloc, SessionLoaded());
               } else if (state is LaunchingPreloadDataFailure) {

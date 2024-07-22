@@ -1,8 +1,6 @@
-// import 'package:boilerplate_flutter/services/services.dart';
-// import 'package:package_info_plus/package_info_plus.dart';
-// import 'package:repository/repository.dart';
-
 import '../repositories/repository.dart';
+import '../services/auth.service.dart';
+import '../services/impl/auth.service.impl.dart';
 import '../services/impl/session.service.impl.dart';
 import '../services/impl/setting.service.impl.dart';
 import '../services/impl/user.service.impl.dart';
@@ -19,10 +17,11 @@ class Provider {
 
   Provider._internal();
 
-  // bool isPhysicalDevice = true;
-  // late PackageInfo packageInfo;
-
   // Service
+    AuthService get authService => AuthServiceImpl(
+        authRepository: Repository().authRepository,
+      );
+
   UserService get userService => UserServiceImpl(
         userRepository: Repository().userRepository,
       );
@@ -32,4 +31,6 @@ class Provider {
 
   SettingService get settingService =>
       SettingServiceImpl(settingRepository: Repository().settingRepository);
+
+  
 }

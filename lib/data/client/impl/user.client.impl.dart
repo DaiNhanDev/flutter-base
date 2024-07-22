@@ -1,7 +1,7 @@
 import '../../../models/authorization.dart';
 import '../../../models/user.dart';
 import '../base_client.dart';
-import '../user_client.dart';
+import '../user.client.dart';
 
 class UserClientImpl extends BaseClient implements UserClient {
   UserClientImpl({
@@ -11,7 +11,8 @@ class UserClientImpl extends BaseClient implements UserClient {
 
   @override
   Future<User> getProfile() async {
-    final json = await get('/user/profile');
+    final json = await get('/access/shop');
+    print('=====> JSON: $json');
     return User.fromJson(json['user']);
   }
 
@@ -36,5 +37,11 @@ class UserClientImpl extends BaseClient implements UserClient {
 
     final _ = await post('/user/registerDevice', payload);
     return true;
+  }
+
+  @override
+  Future<User> logIn() async {
+    final json = await get('/access/login');
+     return User.fromJson(json['user']);
   }
 }

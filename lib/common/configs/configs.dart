@@ -24,7 +24,7 @@ class Configs {
   Configs._internal();
   dynamic _configs;
 
-  String get baseUrl => _configs['BASE_URL'] ?? 'http://example.com';
+  String get baseUrl => 'http://localhost:8000/api/v1';
   String get logLevel => _configs['LOG_LEVEL'] ?? 'error';
   String get supportedLanguages => _configs['SUPPORTED_LANGUAGES'] ?? 'en,vi';
 }

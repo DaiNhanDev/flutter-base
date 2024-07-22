@@ -25,9 +25,9 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LogInScreenState extends State<LogInScreen> {
-  final _emailTextController = TextEditingController();
-  final _passwordTextController = TextEditingController();
-  
+  final _emailTextController = TextEditingController(text: 'nhantest@example.com');
+  final _passwordTextController = TextEditingController(text: 'password1');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,6 +128,8 @@ class _LogInScreenState extends State<LogInScreen> {
                     XButton.primary(
                       title: 'Sign In',
                       onPressed: () {
+                            print('====> : _emailTextController ${_emailTextController.text}');
+
                         EventBus().event<AuthenticationBloc>(
                           Keys.Blocs.authenticationBloc,
                           AuthenticationLoggedIn(

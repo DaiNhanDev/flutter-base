@@ -10,4 +10,6 @@ abstract class UserClient {
     required int deviceType,
     required String deviceUdid,
   });
+
+  Future<User> logIn();
 }

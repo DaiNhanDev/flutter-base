@@ -1,5 +1,5 @@
 
-import '../../data/client/user_client.dart';
+import '../../data/client/user.client.dart';
 import '../../data/dao/user_dao.dart';
 import '../../models/authorization.dart';
 import '../../models/user.dart';
@@ -31,6 +31,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<User> getLatestLoggedInUser() async {
+    await clearAuthentication();
     final user = await _userClient.getProfile();
     await _userDao.saveUser(user);
     return user;

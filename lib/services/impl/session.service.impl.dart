@@ -17,6 +17,7 @@ class SessionServiceImpl implements SessionService {
 
   @override
   Future<User?> getLoggedInUser({bool forceToUpdate = false}) async {
+    print('=======> forceToUpdate');
     if (!forceToUpdate) {
       return _userRepository.getLoggedInUser();
     }

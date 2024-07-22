@@ -36,7 +36,6 @@ class UserDaoImpl extends BaseDao<User> implements UserDao {
     final authorization = getEntity<Authorization>(_CurrentAuthorizationKey,
         mapper:
             Mapper<Authorization>(parser: Authorization.fromJson));
-            print('======> authorization ${authorization?.toJson()}');
     if (authorization == null) {
       return null;
     }
