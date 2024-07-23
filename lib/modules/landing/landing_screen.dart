@@ -61,16 +61,23 @@ class _LandingScreenState extends State<LandingScreen> {
               child: Row(
                 children: [
                   XLinkButton(
-                    title: S.of(context).translate(Strings.Button.signIn),
+                    title: S.of(context).translate(Strings.Button.videoCall),
                     onPressed: () {
-                      AppRouting().pushReplacementNamed(Screens.logIn);
+                      AppRouting().pushReplacementNamed(Screens.videoCall);
                     },
                   ),
                   const Spacer(),
                   XLinkButton(
-                    title: S.of(context).translate(Strings.Button.tryAsGuest),
+                    title: S.of(context).translate(Strings.Button.voiceCall),
                     onPressed: () {
-                      AppRouting().pushReplacementNamed(Screens.dashboard);
+                      AppRouting().pushReplacementNamed(Screens.voiceCall);
+                    },
+                  ),
+                  const Spacer(),
+                  XLinkButton(
+                    title: S.of(context).translate(Strings.Button.livestream),
+                    onPressed: () {
+                      AppRouting().pushReplacementNamed(Screens.liveStream);
                     },
                   ),
                 ],

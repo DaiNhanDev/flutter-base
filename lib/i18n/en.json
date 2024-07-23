@@ -6,5 +6,8 @@
   "button.try_as_guest": "Try as Guest",
   "dashboard.tabbar.home": "Home",
   "dashboard.tabbar.options": "Options",
-  "dashboard.tabbar.account": "Account"
+  "dashboard.tabbar.account": "Account",
+  "button.livestream": "Livestream",
+  "button.voiceCall": "Voice call",
+  "button.videoCall": "Video Call"
 }

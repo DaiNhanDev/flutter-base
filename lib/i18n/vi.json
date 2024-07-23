@@ -6,5 +6,8 @@
   "button.try_as_guest": "Xài Thử",
   "dashboard.home": "Home",
   "dashboard.options": "Chức Năng",
-  "dashboard.account": "Tài Khoản"
+  "dashboard.account": "Tài Khoản",
+  "button.livestream": "Livestream",
+  "button.voiceCall": "Voice call",
+  "button.videoCall": "Video Call"
 }

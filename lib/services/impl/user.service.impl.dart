@@ -56,11 +56,11 @@ class UserServiceImpl implements UserService {
       return;
     }
 
-    final udid = deviceUdid ?? await Device.getUdid();
+    // final udid = deviceUdid ?? await Device.getUdid();
     return _userRepository.registerDevice(
         deviceToken: deviceToken,
         deviceType: deviceType ?? Device.getDeviceType(),
-        deviceUdid: udid);
+        deviceUdid: '1123');
   }
 
   @override

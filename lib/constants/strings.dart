@@ -13,7 +13,7 @@ class Strings {
 // Common for some test really commonly that can be used in many apps
 class _Common {
   final String appName = 'Boilerplate';
-  
+
   final String error = 'common.error';
   final String loading = 'common.loading';
 
@@ -22,8 +22,12 @@ class _Common {
 
 class _Button {
   final String signIn = 'button.signIn';
-  
+
   final String tryAsGuest = 'button.try_as_guest';
+
+  final String videoCall = 'button.videoCall';
+  final String voiceCall = 'button.voiceCall';
+  final String livestream = 'button.livestream';
 }
 
 class _ShowMessage {

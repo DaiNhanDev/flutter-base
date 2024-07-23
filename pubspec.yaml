@@ -36,7 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.6
-  package_info_plus: ^8.0.0
+  # package_info_plus: ^8.0.0
   shared_preferences: ^2.2.3
   http: ^1.2.2
   equatable: ^2.0.5
@@ -48,13 +48,14 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   connectivity: ^3.0.6
-  device_info_plus: ^10.1.0
+  # device_info_plus: ^10.1.0
   flutter_udid: ^3.0.0
   qlevar_router: ^1.10.3
   flutter_svg: ^2.0.10+1
   scrollable_positioned_list: ^0.3.8
   shimmer: ^3.0.0
   agora_rtc_engine: ^6.3.2
+  permission_handler: ^11.3.1
   # firebase_analytics: ^11.2.0
 dev_dependencies:
   flutter_test:

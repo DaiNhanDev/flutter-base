@@ -6,6 +6,9 @@ import 'package:qlevar_router/qlevar_router.dart';
 import '../blocs/authentication/authentication_bloc.dart';
 import '../common/deferred_loader/deferred_loader.dart';
 import '../constants/screens.dart';
+import 'agora/livestream/livestream.screen.dart';
+import 'agora/video-call/video-call.screen.dart';
+import 'agora/voice-call/voice-call.screen.dart';
 import 'auth/login/login.screen.dart' deferred as log_in;
 import 'dashboard/dashboard_screen.dart' deferred as dashboard;
 import 'landing/landing_screen.dart' deferred as landing;
@@ -32,6 +35,21 @@ class AppRouter {
         middleware: [
           DeferredLoader(landing.loadLibrary),
         ],
+      ),
+       QRoute(
+        path: Screens.videoCall,
+        name: Screens.videoCall,
+        builder: () => const VideoCallScreen(),
+      ),
+       QRoute(
+        path: Screens.voiceCall,
+        name: Screens.voiceCall,
+        builder: () => const VoiceCallScreen(),
+      ),
+       QRoute(
+        path: Screens.liveStream,
+        name: Screens.liveStream,
+        builder: () => const LivetreamScreen(),
       ),
       QRoute(
         path: Screens.logIn,
