@@ -1,8 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/configs/configs.dart';
-import '../data/client/auth.client.dart';
-import '../data/client/impl/auth.client.impl.dart';
 import '../data/client/impl/user.client.impl.dart';
 import '../data/client/user.client.dart';
 import '../data/dao/impl/setting_dao.impl.dart';
@@ -10,8 +8,6 @@ import '../data/dao/impl/user_dao_impl.dart';
 import '../data/dao/setting_dao.dart';
 import '../data/dao/user_dao.dart';
 import '../models/authorization.dart';
-import 'auth.repository.dart';
-import 'impl/auth.repository.impl.dart';
 import 'impl/setting.repository.impl.dart';
 import 'impl/user.repository.impl.dart';
 import 'setting.repository.dart';
@@ -34,10 +30,6 @@ class Repository {
 
   bool get isAuthorized => authorization != null;
 
-  // // Repository
-  AuthRepository get authRepository =>
-      AuthRepositoryImpl(authClient: authClient);
-
   UserRepository get userRepository => UserRepositoryImpl(
         userClient: userClient,
         userDao: userDao,
@@ -56,5 +48,4 @@ class Repository {
   // Client
   UserClient get userClient =>
       UserClientImpl(host: Configs().baseUrl, authorization: authorization);
-  AuthClient get authClient => AuthClientImpl(host: Configs().baseUrl);
 }

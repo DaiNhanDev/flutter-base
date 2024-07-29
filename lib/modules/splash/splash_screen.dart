@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/base/event_bus.dart';
 import '../../blocs/launching/launching_bloc.dart';
 import '../../blocs/session/session_bloc.dart';
-import '../../common/common.dart';
+// import '../../common/common.dart';
 import '../../constants/app_context.dart';
 import '../../constants/app_images.dart';
 import '../../constants/keys.dart';
@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final size = MediaQuery.of(context).size;
       AppContext.screenSize = screenSizeFromDevice(screenWidth: size.width);
-      log.info('Screen Size >> $size >> ${AppContext.screenSize}');
+      // log.info('Screen Size >> $size >> ${AppContext.screenSize}');
     });
   }
 
@@ -45,11 +45,10 @@ class _SplashScreenState extends State<SplashScreen> {
           BlocListener<LaunchingBloc, LaunchingState>(
             listener: (_, state) {
               if (state is LaunchingPreloadDataSuccess) {
-                print('====>LaunchingState: $state');
-
                 EventBus().event<SessionBloc>(
                     Keys.Blocs.sessionBloc, SessionLoaded());
-              } else if (state is LaunchingPreloadDataFailure) {
+              } 
+              else if (state is LaunchingPreloadDataFailure) {
                 EventBus().event<LaunchingBloc>(
                     Keys.Blocs.launchingBloc, LaunchingPreloadDataStarted());
               }
@@ -63,8 +62,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 AppRouting().pushReplacementNamed(Screens.landing);
               } else if (state is SessionReadyToLogIn) {
                 AppRouting().pushReplacementNamed(Screens.logIn);
-              } else if (state is SessionRunGuestModeSuccess) {
-                AppRouting().pushReplacementNamed(Screens.landing);
               } else if (state is SessionUserLogInSuccess) {
                 AppRouting().pushReplacementNamed(Screens.landing);
               }

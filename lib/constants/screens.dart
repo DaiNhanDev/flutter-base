@@ -7,5 +7,6 @@ class Screens {
   static String dashboard = '/dashboard';
   static String videoCall = '/video-call';
   static String voiceCall = '/voice-call';
-  static String liveStream = '/live-stream';
+  static String liveStream = '/livestream';
+  static String watchLiveStream = '/watch-livestream';
 }

@@ -31,9 +31,7 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
           initialState: SessionInitial(),
         ) {
     on<SessionLoaded>(_onSessionLoaded);
-    on<SessionGuestModeStarted>(_onSessionGuestModeStarted);
     on<SessionUserLoggedIn>(_onSessionUserLoggedIn);
-    on<SessionShouldSetUpMessaging>(_onSessionShouldSetUpMessaging);
     on<SessionUserSignedOut>(_onSessionUserSignedOut);
   }
 
@@ -56,6 +54,7 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
         blocKey: key,
         event: BroadcastEvent.justLoggedIn,
         onNext: (data) {
+          print('object');
           final User user = data['user'];
           final justSignUp = data['justSignUp'];
           add(SessionUserLoggedIn(user, justSignUp: justSignUp));
@@ -67,50 +66,33 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
   Future<void> _onSessionLoaded(
       SessionLoaded event, Emitter<SessionState> emit) async {
     final authorization = _sessionService.getLoggedInAuthorization();
-         print('authorization $authorization');
+    print('authorization $authorization');
 
     if (authorization != null) {
       Repository().authorization = authorization;
-      log.info('''
-              SESSION LOADED 
-                >> TOKEN >> ${Repository().authorization?.accessToken}
-            ''');
+      // print('''
+      //         SESSION LOADED
+      //           >> TOKEN >> ${Repository().authorization?.accessToken}
+      //       ''');
 
       try {
-        final loggedInUser =
-            await _sessionService.getLoggedInUser(forceToUpdate: true);
-
-        if (loggedInUser != null) {
-          emit(
-            SessionUserLogInSuccess(
-              user: loggedInUser,
-            ),
-          );
-        }
+        final loggedInUser = await _userService.getLatestLoggedInUser();
+        emit(
+          SessionUserLogInSuccess(
+            user: loggedInUser,
+          ),
+        );
       } catch (e) {
         log.error(e);
         emit(SessionReadyToLogIn());
       }
     } else {
-          log.info('''
-              SESSION LOADED 
-                >> TOKEN >> $authorization
-            ''');
       if (await _sessionService.isFirstTimeLaunching()) {
         emit(SessionFirstTimeLaunchSuccess());
-      } else if (await _sessionService.isInGuestMode()) {
-        emit(SessionRunGuestModeSuccess());
       } else {
         emit(SessionReadyToLogIn());
       }
     }
-  }
-
-  Future<void> _onSessionGuestModeStarted(
-      SessionGuestModeStarted event, Emitter<SessionState> emit) async {
-    await _sessionService.markBeInGuestMode();
-
-    emit(SessionRunGuestModeSuccess());
   }
 
   Future<void> _onSessionUserLoggedIn(
@@ -133,15 +115,6 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
         );
       }
     }
-  }
-
-  Future<void> _onSessionShouldSetUpMessaging(
-      SessionShouldSetUpMessaging event, Emitter<SessionState> emit) async {
-    emit(
-      SessionUserReadyToSetUpMessasing(
-        user: state.loggedInUser!,
-      ),
-    );
   }
 
   Future<void> _onSessionUserSignedOut(

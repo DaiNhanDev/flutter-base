@@ -10,10 +10,27 @@ class UserClientImpl extends BaseClient implements UserClient {
   }) : super(host, authorization: authorization);
 
   @override
+  Future<Authorization> logIn(String email, String password) async {
+    final payload = {'email': email, 'password': password};
+    final json = await post('/access/shop/login', payload);
+    final tokens = json['tokens'];
+    final shop = json['shop'];
+
+    return Authorization(
+        accessToken: tokens['accessToken'],
+        refreshToken: tokens['refreshToken'],
+        shopId: shop['_id']);
+  }
+
+  @override
   Future<User> getProfile() async {
+            print('========>getProfile');
+
     final json = await get('/access/shop');
-    print('=====> JSON: $json');
-    return User.fromJson(json['user']);
+    print('=====>json $json');
+        print('=====>json ${User.fromJson(json['shop'])}');
+
+    return User.fromJson(json['shop']);
   }
 
   @override
@@ -21,27 +38,5 @@ class UserClientImpl extends BaseClient implements UserClient {
     final data = {'deviceToken': deviceToken ?? ''};
 
     return post('/user/logOut', data);
-  }
-
-  @override
-  Future<bool> registerDevice({
-    required String deviceToken,
-    required int deviceType,
-    required String deviceUdid,
-  }) async {
-    final payload = {
-      'deviceToken': deviceToken,
-      'deviceType': deviceType,
-      'deviceUdid': deviceUdid
-    };
-
-    final _ = await post('/user/registerDevice', payload);
-    return true;
-  }
-
-  @override
-  Future<User> logIn() async {
-    final json = await get('/access/login');
-     return User.fromJson(json['user']);
   }
 }

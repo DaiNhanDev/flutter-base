@@ -11,7 +11,7 @@ import '../blocs/launching/launching_bloc.dart';
 import '../blocs/loader/loader_bloc.dart';
 import '../blocs/session/session_bloc.dart';
 import '../blocs/show_message/show_message_bloc.dart';
-import '../common/common.dart';
+// import '../common/common.dart';
 import '../constants/screens.dart';
 import '../global/app_route_observer.dart';
 import '../global/app_routing.dart';
@@ -44,18 +44,19 @@ class Application extends StatelessWidget {
         child: MultiBlocListener(
           listeners: [
             BlocListener<SessionBloc, SessionState>(
-              listenWhen: (previous, current) =>
-                  current is SessionUserReadyToSetUpMessasing ||
-                  current is SessionSignOutSuccess,
+              // listenWhen: (previous, current) =>
+              //     current is SessionUserReadyToSetUpMessasing ||
+              //     current is SessionSignOutSuccess,
               listener: (_, state) async {
-                log.info('Session State >> $state');
-                if (state is SessionUserReadyToSetUpMessasing) {
-                  await Future.delayed(const Duration(seconds: 1));
+                print('=====>Session STATE: $state');
+                // log.warning('Session State >> $state');
+                // if (state is SessionUserReadyToSetUpMessasing) {
+                //   await Future.delayed(const Duration(seconds: 1));
 
-                  // start to subscribe all user's topics
-                } else if (state is SessionSignOutSuccess) {
-                  AppRouting().pushReplacementNamed(Screens.logIn);
-                }
+                //   // start to subscribe all user's topics
+                // } else if (state is SessionSignOutSuccess) {
+                //   AppRouting().pushReplacementNamed(Screens.logIn);
+                // }
               },
             )
           ],

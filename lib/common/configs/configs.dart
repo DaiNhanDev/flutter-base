@@ -24,7 +24,7 @@ class Configs {
   Configs._internal();
   dynamic _configs;
 
-  String get baseUrl => 'http://localhost:8000/api/v1';
+  String get baseUrl => 'https://fedd-116-105-226-176.ngrok-free.app/api/v1';
   String get logLevel => _configs['LOG_LEVEL'] ?? 'error';
   String get supportedLanguages => _configs['SUPPORTED_LANGUAGES'] ?? 'en,vi';
 }

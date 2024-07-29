@@ -42,12 +42,7 @@ class UserDaoImpl extends BaseDao<User> implements UserDao {
     
     return authorization;
   }
-
-  @override
-  String? getRegisteredDeviceToken() {
-    return getString(_RegisteredDeviceTokenKey);
-  }
-
+  
   @override
   Future<void> saveRegisteredDeviceToken({required String deviceToken}) {
     return saveString(deviceToken, _RegisteredDeviceTokenKey);

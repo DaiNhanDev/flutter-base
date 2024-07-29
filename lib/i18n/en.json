@@ -9,5 +9,6 @@
   "dashboard.tabbar.account": "Account",
   "button.livestream": "Livestream",
   "button.voiceCall": "Voice call",
-  "button.videoCall": "Video Call"
+  "button.videoCall": "Video Call",
+  "button.watchLivestream": "Watch Livestream"
 }

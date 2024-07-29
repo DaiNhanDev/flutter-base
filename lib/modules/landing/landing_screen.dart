@@ -60,26 +60,39 @@ class _LandingScreenState extends State<LandingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  XLinkButton(
-                    title: S.of(context).translate(Strings.Button.videoCall),
+                   XLinkButton(
+                    title: S.of(context).translate(Strings.Button.signIn),
                     onPressed: () {
-                      AppRouting().pushReplacementNamed(Screens.videoCall);
+                      AppRouting().pushReplacementNamed(Screens.logIn);
                     },
                   ),
-                  const Spacer(),
-                  XLinkButton(
-                    title: S.of(context).translate(Strings.Button.voiceCall),
-                    onPressed: () {
-                      AppRouting().pushReplacementNamed(Screens.voiceCall);
-                    },
-                  ),
-                  const Spacer(),
-                  XLinkButton(
-                    title: S.of(context).translate(Strings.Button.livestream),
-                    onPressed: () {
-                      AppRouting().pushReplacementNamed(Screens.liveStream);
-                    },
-                  ),
+                  // XLinkButton(
+                  //   title: S.of(context).translate(Strings.Button.videoCall),
+                  //   onPressed: () {
+                  //     AppRouting().pushReplacementNamed(Screens.videoCall);
+                  //   },
+                  // ),
+                  // const Spacer(),
+                  // XLinkButton(
+                  //   title: S.of(context).translate(Strings.Button.voiceCall),
+                  //   onPressed: () {
+                  //     AppRouting().pushReplacementNamed(Screens.voiceCall);
+                  //   },
+                  // ),
+                  // const Spacer(),
+                  // XLinkButton(
+                  //   title: S.of(context).translate(Strings.Button.livestream),
+                  //   onPressed: () {
+                  //     AppRouting().pushReplacementNamed(Screens.liveStream);
+                  //   },
+                  // ),
+                  // const Spacer(),
+                  // XLinkButton(
+                  //   title: S.of(context).translate(Strings.Button.watchLivestream),
+                  //   onPressed: () {
+                  //     AppRouting().pushReplacementNamed(Screens.watchLiveStream);
+                  //   },
+                  // ),
                 ],
               ),
             ),

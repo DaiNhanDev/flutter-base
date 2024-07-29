@@ -28,6 +28,7 @@ class _Button {
   final String videoCall = 'button.videoCall';
   final String voiceCall = 'button.voiceCall';
   final String livestream = 'button.livestream';
+    final String watchLivestream = 'button.watchLivestream';
 }
 
 class _ShowMessage {

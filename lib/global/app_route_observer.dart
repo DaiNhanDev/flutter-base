@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../common/common.dart';
+// import '../common/common.dart';
 
 class AppRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   void _sendScreenView(PageRoute<dynamic> route) {
     final screenName = route.settings.name;
-    log.info('Screen Name >> $screenName');
+    print('=====>screenName $screenName');
+    // log.info('Screen Name >> $screenName');
     // do something with it, ie. send it to your analytics service collector
     // AppAnalytics().setCurrentScreen(screenName: screenName);
   }

@@ -25,7 +25,8 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LogInScreenState extends State<LogInScreen> {
-  final _emailTextController = TextEditingController(text: 'nhantest@example.com');
+  final _emailTextController =
+      TextEditingController(text: 'nhantest@example.com');
   final _passwordTextController = TextEditingController(text: 'password1');
 
   @override
@@ -37,9 +38,7 @@ class _LogInScreenState extends State<LogInScreen> {
       ),
       body: BlocListener<SessionBloc, SessionState>(
         listener: (_, state) {
-          if (state is SessionRunGuestModeSuccess) {
-            AppRouting().pushNamed(Screens.landing);
-          } else if (state is SessionUserLogInSuccess) {
+          if (state is SessionUserLogInSuccess) {
             AppRouting().pushReplacementNamed(Screens.dashboard);
           }
         },
@@ -128,7 +127,8 @@ class _LogInScreenState extends State<LogInScreen> {
                     XButton.primary(
                       title: 'Sign In',
                       onPressed: () {
-                            print('====> : _emailTextController ${_emailTextController.text}');
+                        print(
+                            '====> : _emailTextController ${_emailTextController.text}');
 
                         EventBus().event<AuthenticationBloc>(
                           Keys.Blocs.authenticationBloc,

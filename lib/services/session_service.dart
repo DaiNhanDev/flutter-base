@@ -9,10 +9,4 @@ abstract class SessionService {
   Future<User?> getLoggedInUser({bool forceToUpdate});
 
   Authorization? getLoggedInAuthorization();
-
-  Future<bool> isInGuestMode();
-
-  Future<void> markBeInGuestMode();
-
-  Future<void> markExistGuestMode();
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/show_message/show_message_bloc.dart';
-import '../../../common/common.dart';
+// import '../../../common/common.dart';
 import '../loading/loading.dart';
 import '../lost_connection/lost_connection.dart';
 
@@ -31,29 +31,30 @@ class _AppShowingState extends State<AppShowing> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('======>state $state ');
     switch (state) {
       case AppLifecycleState.resumed:
         {
-          log.info('App Resumed from Background');
+          // log.info('App Resumed from Background');
         }
         break;
       case AppLifecycleState.inactive:
         {
-          log.info('App Change to Inactive');
+          // log.info('App Change to Inactive');
         }
         break;
       case AppLifecycleState.paused:
         {
-          log.info('App Paused');
+          // log.info('App Paused');
         }
         break;
       case AppLifecycleState.detached:
         {
-          log.info('Widget is detached');
+          // log.info('Widget is detached');
         }
         break;
       case AppLifecycleState.hidden:
-        log.info('App hidden');
+        // log.info('App hidden');
         break;
     }
   }

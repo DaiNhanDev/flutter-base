@@ -3,18 +3,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../action.dart';
-import '../configuration.dart';
-import '../statstic.dart';
+import '../../../common/common.dart';
+import '../../../widgets/nav_bar/nav_bar.dart';
+import '../../../widgets/text/x_text.dart';
 
 const appId = 'b3965ab191db4e6ab05b3fd709ccdc27';
 const token =
-    '007eJxTYNDUjr7bv0VgkpBCZe9aR/H4q2Kdqy4sPrh+1yzLBSc0/nYrMCQZW5qZJiYZWhqmJJmkmiUmGZgmGaelmBtYJienJBuZLxeZn9YQyMgQZriHlZEBAkF8Toa8jMS8+JLU4hIGBgDrRSG6';
+    '007eJxTYPjCnP/3wyPT3UrzmE9tao9k7TjpXbThnVPUXxEDudi8piYFhiRjSzPTxCRDS8OUJJNUs8QkA9Mk47QUcwPL5OSUZCPz3TkL0hoCGRkaE+RYGRkgEMTnZMjLSMyLL0ktLmFgAAAoHCHv';
 const channelId = 'nhan_test';
 
-/// MultiChannel Example
 class VoiceCallScreen extends StatefulWidget {
-  /// Construct the [VoiceCallScreen]
   const VoiceCallScreen({super.key});
 
   @override
@@ -23,26 +21,25 @@ class VoiceCallScreen extends StatefulWidget {
 
 class _State extends State<VoiceCallScreen> {
   late final RtcEngine _engine;
+  Set<int> remoteUid = {};
 
   bool isJoined = false,
-      switchCamera = true,
-      switchRender = true,
-      openCamera = true,
-      muteCamera = false,
-      muteAllRemoteVideo = false;
-  Set<int> remoteUid = {};
-  late TextEditingController _controller;
-  bool _isUseFlutterTexture = false;
-  final bool _isUseAndroidSurfaceView = false;
-  ChannelProfileType _channelProfileType =
-      ChannelProfileType.channelProfileLiveBroadcasting;
+      openMicrophone = true,
+      muteMicrophone = false,
+      muteAllRemoteAudio = false,
+      enableSpeakerphone = true,
+      playEffect = false;
+  bool _isSetDefaultAudioRouteToSpeakerphone = false;
+  bool _enableInEarMonitoring = false;
+  double _recordingVolume = 100,
+      _playbackVolume = 100,
+      _inEarMonitoringVolume = 100;
+
   late final RtcEngineEventHandler _rtcEngineEventHandler;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: channelId);
-
     _initEngine();
   }
 
@@ -62,6 +59,7 @@ class _State extends State<VoiceCallScreen> {
     _engine = createAgoraRtcEngine();
     await _engine.initialize(const RtcEngineContext(
       appId: appId,
+      channelProfile: ChannelProfileType.channelProfileCommunication,
     ));
 
     _rtcEngineEventHandler = RtcEngineEventHandler(
@@ -82,6 +80,11 @@ class _State extends State<VoiceCallScreen> {
           remoteUid.add(rUid);
         });
       },
+      onRemoteAudioStateChanged: (RtcConnection connection, int remoteUid,
+          RemoteAudioState state, RemoteAudioStateReason reason, int elapsed) {
+        log.warning(
+            '[onRemoteAudioStateChanged] connection: ${connection.toJson()} remoteUid: $remoteUid state: $state reason: $reason elapsed: $elapsed');
+      },
       onUserOffline:
           (RtcConnection connection, int rUid, UserOfflineReasonType reason) {
         print(
@@ -98,239 +101,223 @@ class _State extends State<VoiceCallScreen> {
           remoteUid.clear();
         });
       },
-      onRemoteVideoStateChanged: (RtcConnection connection, int remoteUid,
-          RemoteVideoState state, RemoteVideoStateReason reason, int elapsed) {
-        print(
-            '[onRemoteVideoStateChanged] connection: ${connection.toJson()} remoteUid: $remoteUid state: $state reason: $reason elapsed: $elapsed');
+      onAudioRoutingChanged: (routing) {
+        log.warning('[onAudioRoutingChanged] routing: $routing');
       },
     );
 
     _engine.registerEventHandler(_rtcEngineEventHandler);
 
-    await _engine.enableVideo();
-    await _engine.startPreview();
+    await _engine.enableAudio();
+    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await _engine.setAudioProfile(
+      profile: AudioProfileType.audioProfileDefault,
+      scenario: AudioScenarioType.audioScenarioGameStreaming,
+    );
   }
 
   Future<void> _joinChannel() async {
-    await [Permission.microphone, Permission.camera].request();
-// Enable the video module
-    await _engine.enableVideo();
-// Enable local video preview
-    await _engine.startPreview();
-
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await Permission.microphone.request();
+    }
+    await _engine.enableAudio();
     await _engine.joinChannel(
-      token: token,
-      channelId: _controller.text,
-      uid: 0,
-      options: ChannelMediaOptions(
-        channelProfile: _channelProfileType,
-        clientRoleType: ClientRoleType.clientRoleBroadcaster,
-      ),
-    );
+        token: token,
+        channelId: channelId,
+        uid: 0,
+        options: const ChannelMediaOptions(
+          autoSubscribeAudio: true,
+          publishMicrophoneTrack: true,
+          clientRoleType: ClientRoleType.clientRoleBroadcaster,
+        ));
   }
 
   Future<void> _leaveChannel() async {
     await _engine.leaveChannel();
     setState(() {
-      openCamera = true;
-      muteCamera = false;
-      muteAllRemoteVideo = false;
+      isJoined = false;
+      openMicrophone = true;
+      muteMicrophone = false;
+      muteAllRemoteAudio = false;
+      enableSpeakerphone = true;
+      playEffect = false;
+      _enableInEarMonitoring = false;
+      _recordingVolume = 100;
+      _playbackVolume = 100;
+      _inEarMonitoringVolume = 100;
     });
   }
 
-  Future<void> _switchCamera() async {
-    await _engine.switchCamera();
+  Future<void> _switchMicrophone() async {
+    await _engine.muteLocalAudioStream(!openMicrophone);
+    await _engine.enableLocalAudio(!openMicrophone);
     setState(() {
-      switchCamera = !switchCamera;
+      openMicrophone = !openMicrophone;
     });
   }
 
-  Future<void> _openCamera() async {
-    await _engine.enableLocalVideo(!openCamera);
+  Future<void> _switchSpeakerphone() async {
+    await _engine.setEnableSpeakerphone(!enableSpeakerphone);
     setState(() {
-      openCamera = !openCamera;
+      enableSpeakerphone = !enableSpeakerphone;
     });
   }
 
-  Future<void> _muteLocalVideoStream() async {
-    await _engine.muteLocalVideoStream(!muteCamera);
-    setState(() {
-      muteCamera = !muteCamera;
-    });
+  Future<void> _onChangeInEarMonitoringVolume(double value) async {
+    _inEarMonitoringVolume = value;
+    await _engine.setInEarMonitoringVolume(_inEarMonitoringVolume.toInt());
+    setState(() {});
   }
 
-  Future<void> _muteAllRemoteVideoStreams() async {
-    await _engine.muteAllRemoteVideoStreams(!muteAllRemoteVideo);
-    setState(() {
-      muteAllRemoteVideo = !muteAllRemoteVideo;
-    });
+  Future<void> _toggleInEarMonitoring(value) async {
+    try {
+      await _engine.enableInEarMonitoring(
+          enabled: value,
+          includeAudioFilters: EarMonitoringFilterType.earMonitoringFilterNone);
+      _enableInEarMonitoring = value;
+      // setState(() {});
+    } catch (e) {
+      // Do nothing
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ExampleActionsWidget(
-      displayContentBuilder: (context, isLayoutHorizontal) {
-        return Stack(
-          children: <Widget>[
-            StatsMonitoringWidget(
-              rtcEngine: _engine,
-              uid: 0,
-              child: AgoraVideoView(
-                controller: VideoViewController(
-                  rtcEngine: _engine,
-                  canvas: const VideoCanvas(uid: 0),
-                  useFlutterTexture: _isUseFlutterTexture,
-                  useAndroidSurfaceView: _isUseAndroidSurfaceView,
-                ),
-                onAgoraVideoViewCreated: (viewId) {
-                  _engine.startPreview();
-                },
-              ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.of(remoteUid.map(
-                    (e) => SizedBox(
-                      width: 200,
-                      height: 200,
-                      child: StatsMonitoringWidget(
-                        rtcEngine: _engine,
-                        uid: e,
-                        channelId: _controller.text,
-                        child: AgoraVideoView(
-                          controller: VideoViewController.remote(
-                            rtcEngine: _engine,
-                            canvas: VideoCanvas(uid: e),
-                            connection:
-                                RtcConnection(channelId: _controller.text),
-                            useFlutterTexture: _isUseFlutterTexture,
-                            useAndroidSurfaceView: _isUseAndroidSurfaceView,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )),
-                ),
-              ),
-            )
-          ],
-        );
-      },
-      actionsBuilder: (context, isLayoutHorizontal) {
-        final channelProfileType = [
-          ChannelProfileType.channelProfileLiveBroadcasting,
-          ChannelProfileType.channelProfileCommunication,
-        ];
-        final items = channelProfileType
-            .map((e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(
-                    e.toString().split('.')[1],
-                  ),
-                ))
-            .toList();
-
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        appBar: NavBar(
+          statusBarHeight: MediaQuery.of(context).padding.top,
+          center: const XText.headlineMedium('Voice Call'),
+        ),
+        body: Stack(
           children: [
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(hintText: 'Channel ID'),
-            ),
-            if (!kIsWeb &&
-                (defaultTargetPlatform == TargetPlatform.android ||
-                    defaultTargetPlatform == TargetPlatform.iOS))
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('Rendered by Flutter texture: '),
-                        Switch(
-                          value: _isUseFlutterTexture,
-                          onChanged: isJoined
-                              ? null
-                              : (changed) {
-                                  setState(() {
-                                    _isUseFlutterTexture = changed;
-                                  });
-                                },
-                        )
-                      ]),
-                ],
-              ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Channel Profile: '),
-            DropdownButton<ChannelProfileType>(
-              items: items,
-              value: _channelProfileType,
-              onChanged: isJoined
-                  ? null
-                  : (v) {
-                      setState(() {
-                        _channelProfileType = v!;
-                      });
-                    },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            BasicVideoConfigurationWidget(
-              rtcEngine: _engine,
-              title: 'Video Encoder Configuration',
-              setConfigButtonText: const Text(
-                'setVideoEncoderConfiguration',
-                style: TextStyle(fontSize: 10),
-              ),
-              onConfigChanged: (width, height, frameRate, bitrate) {
-                _engine.setVideoEncoderConfiguration(VideoEncoderConfiguration(
-                  dimensions: VideoDimensions(width: width, height: height),
-                  frameRate: frameRate,
-                  bitrate: bitrate,
-                ));
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: ElevatedButton(
-                    onPressed: isJoined ? _leaveChannel : _joinChannel,
-                    child: Text('${isJoined ? 'Leave' : 'Join'} channel'),
-                  ),
-                )
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        onPressed: isJoined ? _leaveChannel : _joinChannel,
+                        child: Text('${isJoined ? 'Leave' : 'Join'} channel'),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
-            if (!kIsWeb &&
-                (defaultTargetPlatform == TargetPlatform.android ||
-                    defaultTargetPlatform == TargetPlatform.iOS)) ...[
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: _switchCamera,
-                child: Text('Camera ${switchCamera ? 'front' : 'rear'}'),
-              ),
-            ],
+            Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _switchMicrophone,
+                        child:
+                            Text('Microphone ${openMicrophone ? 'on' : 'off'}'),
+                      ),
+                      if (!kIsWeb) ...[
+                        ElevatedButton(
+                          onPressed: () {
+                            _isSetDefaultAudioRouteToSpeakerphone =
+                                !_isSetDefaultAudioRouteToSpeakerphone;
+                            _engine.setDefaultAudioRouteToSpeakerphone(
+                                _isSetDefaultAudioRouteToSpeakerphone);
+                            setState(() {});
+                          },
+                          child: Text(!_isSetDefaultAudioRouteToSpeakerphone
+                              ? 'SetDefaultAudioRouteToSpeakerphone'
+                              : 'UnsetDefaultAudioRouteToSpeakerphone'),
+                        ),
+                        ElevatedButton(
+                          onPressed: isJoined ? _switchSpeakerphone : null,
+                          child: Text(
+                              enableSpeakerphone ? 'Speakerphone' : 'Earpiece'),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Text('RecordingVolume:'),
+                            Slider(
+                              value: _recordingVolume,
+                              min: 0,
+                              max: 400,
+                              divisions: 5,
+                              label: 'RecordingVolume',
+                              onChanged: isJoined
+                                  ? (double value) async {
+                                      setState(() {
+                                        _recordingVolume = value;
+                                      });
+                                      await _engine.adjustRecordingSignalVolume(
+                                          value.toInt());
+                                    }
+                                  : null,
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Text('PlaybackVolume:'),
+                            Slider(
+                              value: _playbackVolume,
+                              min: 0,
+                              max: 400,
+                              divisions: 5,
+                              label: 'PlaybackVolume',
+                              onChanged: isJoined
+                                  ? (double value) async {
+                                      setState(() {
+                                        _playbackVolume = value;
+                                      });
+                                      await _engine.adjustPlaybackSignalVolume(
+                                          value.toInt());
+                                    }
+                                  : null,
+                            )
+                          ],
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                              const Text('InEar Monitoring Volume:'),
+                              Switch(
+                                value: _enableInEarMonitoring,
+                                onChanged:
+                                    isJoined ? _toggleInEarMonitoring : null,
+                                activeTrackColor: Colors.grey[350],
+                                activeColor: Colors.white,
+                              )
+                            ]),
+                            if (_enableInEarMonitoring)
+                              SizedBox(
+                                  width: 300,
+                                  child: Slider(
+                                    value: _inEarMonitoringVolume,
+                                    min: 0,
+                                    max: 100,
+                                    divisions: 5,
+                                    label:
+                                        'InEar Monitoring Volume $_inEarMonitoringVolume',
+                                    onChanged: isJoined
+                                        ? _onChangeInEarMonitoringVolume
+                                        : null,
+                                  ))
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ))
           ],
-        );
-      },
-    ));
-    // if (!_isInit) return Container();
+        ));
   }
 }

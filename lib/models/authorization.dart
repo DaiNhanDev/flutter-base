@@ -1,12 +1,12 @@
 import 'entity.dart';
 
 class Authorization extends Entity {
-  final String accessToken;
-  final String refreshToken;
+  final String? accessToken;
+  final String? refreshToken;
   final String shopId;
   Authorization(
-      {required this.accessToken,
-      required this.refreshToken,
+      {this.accessToken,
+      this.refreshToken,
       required this.shopId});
 
   //ignore: prefer_constructors_over_static_methods
@@ -14,11 +14,11 @@ class Authorization extends Entity {
     return Authorization(
         accessToken: json['access_token'],
         refreshToken: json['refreshToken'],
-        shopId: json['_id']);
+        shopId: json['shopId']);
   }
 
   @override
-  List<Object> get props => [accessToken, refreshToken];
+  List<Object> get props => [accessToken ?? '', refreshToken ?? ''];
 
   @override
   Map<String, dynamic> toJson() => {

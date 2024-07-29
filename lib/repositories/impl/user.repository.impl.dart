@@ -1,4 +1,3 @@
-
 import '../../data/client/user.client.dart';
 import '../../data/dao/user_dao.dart';
 import '../../models/authorization.dart';
@@ -16,6 +15,15 @@ class UserRepositoryImpl implements UserRepository {
         _userDao = userDao;
 
   @override
+  Future<Authorization> logIn({
+    required String email,
+    required String password,
+  }) async {
+    final authorization = await _userClient.logIn(email, password);
+    return authorization;
+  }
+
+  @override
   Future<void> saveUser(User user, {Authorization? authorization}) async {
     await _userDao.saveUser(user);
 
@@ -25,14 +33,21 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<void> saveAuthorization(Authorization authorization) async {
+    await _userDao.saveAuthorization(authorization);
+  }
+
+  @override
   User? getLoggedInUser({bool forceToUpdate = false}) {
     return _userDao.loadUser();
   }
 
   @override
   Future<User> getLatestLoggedInUser() async {
-    await clearAuthentication();
+        print('========>get user');
+
     final user = await _userClient.getProfile();
+    print('========>user ${user.toJson()}');
     await _userDao.saveUser(user);
     return user;
   }
@@ -50,27 +65,5 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> clearAuthentication() {
     return _userDao.clearAuthentication();
-  }
-
-  @override
-  String? getRegisteredDeviceToken() {
-    return _userDao.getRegisteredDeviceToken();
-  }
-
-  @override
-  Future<void> registerDevice({
-    required String deviceToken,
-    required int deviceType,
-    required String deviceUdid,
-  }) async {
-    final result = await _userClient.registerDevice(
-      deviceToken: deviceToken,
-      deviceType: deviceType,
-      deviceUdid: deviceUdid,
-    );
-
-    if (result) {
-      await _userDao.saveRegisteredDeviceToken(deviceToken: deviceToken);
-    }
   }
 }

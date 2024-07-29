@@ -12,7 +12,5 @@ abstract class UserDao {
 
   Future<void> saveRegisteredDeviceToken({required String deviceToken});
 
-  String? getRegisteredDeviceToken();
-
   Future<void> clearAuthentication();
 }

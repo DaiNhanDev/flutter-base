@@ -1,4 +1,3 @@
-
 import '../models/user.dart';
 
 abstract class UserService {
@@ -8,12 +7,6 @@ abstract class UserService {
   });
 
   Future<void> signOut();
-
-  Future<void> registerDeviceIfNeeded({
-    required String deviceToken,
-    String? deviceUdid,
-    int? deviceType,
-  });
-
+  Future<User> getLatestLoggedInUser();
   bool isUserAlreadyLoggedIn();
 }

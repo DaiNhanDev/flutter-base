@@ -5,6 +5,7 @@ import 'package:retry/retry.dart';
 
 import '../../exception/exception.dart';
 import '../../models/authorization.dart';
+import '../../repositories/repository.dart';
 
 abstract class BaseClient {
   final Client _client;
@@ -17,7 +18,7 @@ abstract class BaseClient {
         _authorization = authorization;
 
   Uri _getParsedUrl(String path) {
-    print('===> $_host$path');
+    print('====> endpoint: $_host$path');
     return Uri.parse('$_host$path');
   }
 
@@ -52,35 +53,31 @@ abstract class BaseClient {
     dynamic responseJson;
     try {
       Request request = Request(method, _getParsedUrl(path));
-      print('=======> request ${request}');
-      print('=======> method ${method}');
 
-      // final token = _authorization ?? Repository().authorization?.accessToken;
-      // if (token != null) {
-      //   request.headers['Authorization'] = 'Bearer $token';
-      // }
+      final token = _authorization?.accessToken ??
+          Repository().authorization?.accessToken;
+
+      final clientId =
+          _authorization?.shopId ?? Repository().authorization?.shopId;
+            print('===> token $token');
+
+      print('===> token $clientId');
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+        request.headers['x-client-id'] = '$clientId';
+      }
       request.headers['Content-Type'] = 'application/json; charset=UTF-8';
       if (data != null) {
         request.body = jsonEncode(data);
-        print('=======> request.body ${request.body}');
       }
 
       responseJson = await retry(
         () async {
           final response = await _client
               .send(request)
-              // .timeout(const Duration(seconds: 30))
+              .timeout(const Duration(seconds: 30))
               .then(Response.fromStream);
-
-          // final response = _client.post(
-          //   Uri.parse('http://localhost:8000/api/v1/access/shop/login'),
-          //   headers: <String, String>{
-          //     'Content-Type': 'application/jsorset=UTF-8',
-          //   },
-          //   body: jsonEncode(data),
-          // );
-
-          return response;
+          return _returnResponse(response);
         },
         retryIf: (e) async {
           if (e is UnauthorisedException) {
@@ -97,15 +94,10 @@ abstract class BaseClient {
   }
 
   dynamic _returnResponse(Response response) {
-    print('======> responseJson ${response.body.toString()}');
-
     switch (response.statusCode) {
       case 200:
         final responseJson = jsonDecode(response.body);
-        if (responseJson['result'] == false) {
-          throw AppException(responseJson);
-        }
-        return responseJson;
+        return responseJson['metadata'];
       case 400:
         throw BadRequestException(response.body.toString());
       case 401:

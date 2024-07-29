@@ -6,9 +6,9 @@ import '../../global/localization.dart';
 import '../../models/badge_type.dart';
 import '../account/account_screen.dart';
 import '../home/home_screen.dart';
-import '../landing/landing_screen.dart';
+// import '../landing/landing_screen.dart';
 import '../options/options_screen.dart';
-import '../splash/splash_screen.dart';
+// import '../splash/splash_screen.dart';
 import 'tabbar_icon.dart';
 
 enum BottomTabbar { home, options, account }

@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 // import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_udid/flutter_udid.dart';
+// import 'package:flutter_udid/flutter_udid.dart';
 
 class Device {
   static int getDeviceType() {

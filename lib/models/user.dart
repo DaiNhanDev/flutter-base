@@ -1,40 +1,27 @@
-// import 'package:common/common.dart';
-// import 'package:repository/model/entity.dart';
-// import 'package:repository/enum/enum.dart';
-
-import '../enum/gender.dart';
-import '../extension/date_time_extension.dart';
 import 'entity.dart';
 
 class User extends Entity {
   final String userId;
-
   final String name;
-  final String? occupation;
-  final DateTime? birthday;
-  final Gender gender;
+  final String? email;
 
   //ignore: prefer_constructors_over_static_methods
   static User fromJson(Map<String, dynamic> json) {
     return User(
-      userId: json['userId'],
-      occupation: json['occupation'],
-      birthday: DateTimeExtension.fromSeconds(json['birthday']),
+      userId: json['_id'],
+      email: json['email'],
       name: json['name'],
-      gender: genderFromString(gender: json['gender']),
     );
   }
 
   User({
     required this.userId,
     required this.name,
-    this.occupation,
-    this.birthday,
-    required this.gender,
+    this.email,
   });
 
   factory User.test() {
-    return User(userId: 'user_id', name: 'name', gender: Gender.female);
+    return User(userId: 'user_id', name: 'name');
   }
 
   @override
@@ -45,14 +32,8 @@ class User extends Entity {
     final json = <String, dynamic>{
         'userId': userId,
         'name': name,
-        'gender': gender.toValue(),
+        'email': email,
       };
-    if (birthday != null) {
-      json['birthday'] = birthday!.secondsSinceEpoc;
-    }
-    if (occupation != null) {
-      json['birthday'] = birthday!.secondsSinceEpoc;
-    }
     return json;
   }
 }

@@ -7,7 +7,6 @@ import '../../repositories/user.repository.dart';
 import '../session_service.dart';
 
 const _FirstTimeLaunchingKey = 'key_first_time_launching';
-const _BeInGuestModeKey = 'key_be_in_guest_mode';
 
 class SessionServiceImpl implements SessionService {
   final UserRepository _userRepository;
@@ -17,7 +16,6 @@ class SessionServiceImpl implements SessionService {
 
   @override
   Future<User?> getLoggedInUser({bool forceToUpdate = false}) async {
-    print('=======> forceToUpdate');
     if (!forceToUpdate) {
       return _userRepository.getLoggedInUser();
     }
@@ -25,7 +23,7 @@ class SessionServiceImpl implements SessionService {
   }
 
   @override
-  Authorization? getLoggedInAuthorization() {
+  Authorization? getLoggedInAuthorization () {
     return _userRepository.getLoggedInAuthorization();
   }
 
@@ -41,22 +39,4 @@ class SessionServiceImpl implements SessionService {
     await prefs.setBool(_FirstTimeLaunchingKey, true);
   }
 
-  @override
-  Future<bool> isInGuestMode() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    return prefs.getBool(_BeInGuestModeKey) ?? false;
-  }
-
-  @override
-  Future<void> markBeInGuestMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_BeInGuestModeKey, true);
-  }
-
-  @override
-  Future<void> markExistGuestMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_BeInGuestModeKey, false);
-  }
 }

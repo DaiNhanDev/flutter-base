@@ -23,25 +23,12 @@ class SessionFirstTimeLaunchSuccess extends SessionState {
 class SessionReadyToLogIn extends SessionState {
   SessionReadyToLogIn() : super();
 }
-
-class SessionRunGuestModeSuccess extends SessionState {
-  SessionRunGuestModeSuccess() : super();
-}
-
 class SessionUserLogInSuccess extends SessionState {
   final bool justSignUp;
 
   SessionUserLogInSuccess({
     required User user,
     this.justSignUp = false,
-  }) : super(
-          loggedInUser: user,
-        );
-}
-
-class SessionUserReadyToSetUpMessasing extends SessionState {
-  SessionUserReadyToSetUpMessasing({
-    required User user,
   }) : super(
           loggedInUser: user,
         );

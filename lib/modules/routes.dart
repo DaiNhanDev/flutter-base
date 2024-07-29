@@ -7,6 +7,7 @@ import '../blocs/authentication/authentication_bloc.dart';
 import '../common/deferred_loader/deferred_loader.dart';
 import '../constants/screens.dart';
 import 'agora/livestream/livestream.screen.dart';
+import 'agora/livestream/watchstream.screen.dart';
 import 'agora/video-call/video-call.screen.dart';
 import 'agora/voice-call/voice-call.screen.dart';
 import 'auth/login/login.screen.dart' deferred as log_in;
@@ -50,6 +51,11 @@ class AppRouter {
         path: Screens.liveStream,
         name: Screens.liveStream,
         builder: () => const LivetreamScreen(),
+      ),
+      QRoute(
+        path: Screens.watchLiveStream,
+        name: Screens.watchLiveStream,
+        builder: () => const WatchLivetreamScreen(),
       ),
       QRoute(
         path: Screens.logIn,
