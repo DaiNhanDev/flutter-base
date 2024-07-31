@@ -54,7 +54,6 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
         blocKey: key,
         event: BroadcastEvent.justLoggedIn,
         onNext: (data) {
-          print('object');
           final User user = data['user'];
           final justSignUp = data['justSignUp'];
           add(SessionUserLoggedIn(user, justSignUp: justSignUp));
@@ -66,7 +65,6 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
   Future<void> _onSessionLoaded(
       SessionLoaded event, Emitter<SessionState> emit) async {
     final authorization = _sessionService.getLoggedInAuthorization();
-    print('authorization $authorization');
 
     if (authorization != null) {
       Repository().authorization = authorization;
@@ -125,9 +123,6 @@ class SessionBloc extends BaseBloc<SessionEvent, SessionState> with AppLoader {
       await _userService.signOut();
 
       hideAppLoading();
-
-      // EventBus().event<MessagingBloc>(
-      //     Keys.Blocs.messagingBloc, MessagingAllTopicsUnsubscribed());
 
       emit(SessionSignOutSuccess());
     } catch (e) {

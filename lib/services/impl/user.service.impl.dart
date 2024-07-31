@@ -27,7 +27,6 @@ class UserServiceImpl implements UserService {
 
   @override
   Future<User> getLatestLoggedInUser() async {
-   
     final user = await _userRepository.getLatestLoggedInUser();
 
     return user;
@@ -46,5 +45,10 @@ class UserServiceImpl implements UserService {
   @override
   bool isUserAlreadyLoggedIn() {
     return _userRepository.getLoggedInUser() != null;
+  }
+
+  @override
+  Future<List<User>> loadUsers({Map<String, dynamic>? params}) {
+    return _userRepository.loadUsers();
   }
 }

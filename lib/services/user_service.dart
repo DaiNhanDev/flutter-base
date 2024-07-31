@@ -9,4 +9,5 @@ abstract class UserService {
   Future<void> signOut();
   Future<User> getLatestLoggedInUser();
   bool isUserAlreadyLoggedIn();
+  Future<List<User>> loadUsers({Map<String, dynamic> params});
 }

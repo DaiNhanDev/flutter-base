@@ -59,9 +59,7 @@ abstract class BaseClient {
 
       final clientId =
           _authorization?.shopId ?? Repository().authorization?.shopId;
-            print('===> token $token');
 
-      print('===> token $clientId');
       if (token != null) {
         request.headers['Authorization'] = 'Bearer $token';
         request.headers['x-client-id'] = '$clientId';

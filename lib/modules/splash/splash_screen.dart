@@ -56,14 +56,13 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           BlocListener<SessionBloc, SessionState>(
             listener: (_, state) async {
-              print('====> state: $state');
-              await Future.delayed(const Duration(milliseconds: 1500));
+              await Future.delayed(const Duration(milliseconds: 1000));
               if (state is SessionFirstTimeLaunchSuccess) {
                 AppRouting().pushReplacementNamed(Screens.landing);
               } else if (state is SessionReadyToLogIn) {
                 AppRouting().pushReplacementNamed(Screens.logIn);
               } else if (state is SessionUserLogInSuccess) {
-                AppRouting().pushReplacementNamed(Screens.landing);
+                AppRouting().pushReplacementNamed(Screens.dashboard);
               }
             },
           ),

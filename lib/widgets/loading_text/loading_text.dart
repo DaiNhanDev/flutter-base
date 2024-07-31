@@ -7,12 +7,12 @@ class LoadingText extends StatefulWidget {
   final TextStyle textStyle;
   final Duration? showAfter;
 
-  LoadingText({
-    Key? key,
+  const LoadingText({
+    super.key,
     this.text,
     required this.textStyle,
     this.showAfter,
-  }) : super(key: key);
+  });
 
   @override
   State<LoadingText> createState() {
@@ -27,7 +27,7 @@ class _LoadingTextState extends State<LoadingText> {
   void initState() {
     super.initState();
 
-    if (widget.showAfter != null) {
+    if (widget.showAfter != null && mounted) {
       _isShowing = false;
       Future.delayed(widget.showAfter!, () {
         setState(() {

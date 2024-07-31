@@ -24,12 +24,7 @@ class UserClientImpl extends BaseClient implements UserClient {
 
   @override
   Future<User> getProfile() async {
-            print('========>getProfile');
-
     final json = await get('/access/shop');
-    print('=====>json $json');
-        print('=====>json ${User.fromJson(json['shop'])}');
-
     return User.fromJson(json['shop']);
   }
 
@@ -38,5 +33,12 @@ class UserClientImpl extends BaseClient implements UserClient {
     final data = {'deviceToken': deviceToken ?? ''};
 
     return post('/user/logOut', data);
+  }
+
+  @override
+  Future<List<User>> loadUsers({Map<String, dynamic>? params}) async {
+    final json = await get('/shop/search');
+    print('=====> json ${json.toString()}');
+    return json;
   }
 }

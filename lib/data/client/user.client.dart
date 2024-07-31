@@ -7,4 +7,5 @@ abstract class UserClient {
   Future<User> getProfile();
 
   Future<void> signOut({String? deviceToken});
+  Future<List<User>> loadUsers({Map<String, dynamic>? params});
 }

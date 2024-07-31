@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/keys.dart';
 import '../../global/provider.dart';
-import '../../services/session_service.dart';
 import '../../services/user_service.dart';
 import '../base/base_bloc.dart';
 import '../base/event_bus.dart';
@@ -14,15 +13,12 @@ part 'authentication_event.dart';
 
 class AuthenticationBloc
     extends BaseBloc<AuthenticationEvent, AuthenticationState> {
-  final SessionService _sessionService;
   final UserService _userService;
 
   AuthenticationBloc(
     super.key, {
-    required SessionService sessionService,
     required UserService userService,
-  })  : _sessionService = sessionService,
-        _userService = userService,
+  })  : _userService = userService,
         super(initialState: AuthenticationInitial()) {
     on<AuthenticationLoggedIn>(_onAuthenticationLoggedIn);
   }
@@ -31,9 +27,7 @@ class AuthenticationBloc
     final key = Keys.Blocs.authenticationBloc;
     return EventBus().newBlocWithConstructor<AuthenticationBloc>(
       key,
-      () => AuthenticationBloc(key,
-          sessionService: Provider().sessionService,
-          userService: Provider().userService),
+      () => AuthenticationBloc(key, userService: Provider().userService),
     );
   }
 
@@ -41,7 +35,7 @@ class AuthenticationBloc
       AuthenticationLoggedIn event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationLogInInProgress());
-    final loggedInUser =  await _userService.logIn(
+      final loggedInUser = await _userService.logIn(
         email: event.email,
         password: event.password,
       );

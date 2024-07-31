@@ -31,6 +31,7 @@ class _Blocs {
   final Key deeplinkBloc = const Key('deeplink_bloc');
   final Key sessionBloc = const Key('session_bloc');
   final Key launchingBloc = const Key('launching_bloc');
+  final Key homeBloc = const Key('home_bloc');
 
   Key badgeNumberBlocKey(BadgeType type) =>
       Key('badge_number_bloc_${type.toKey()}');

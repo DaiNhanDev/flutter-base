@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/group.dart';
@@ -15,12 +15,10 @@ class LoadListBloc<T extends Object>
     extends BaseBloc<LoadListEvent, LoadListState> {
   final LoadListService<T> _loadListService;
 
-  LoadListBloc(Key key,
-      {required LoadListService<T> loadListService, Key? closeWithBlocKey})
+  LoadListBloc(super.key,
+      {required LoadListService<T> loadListService, super.closeWithBlocKey})
       : _loadListService = loadListService,
         super(
-          key,
-          closeWithBlocKey: closeWithBlocKey,
           initialState: LoadListInitial(),
         ) {
     on<LoadListRemovedItem>(_onLoadListRemovedItem);

@@ -44,10 +44,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<User> getLatestLoggedInUser() async {
-        print('========>get user');
-
     final user = await _userClient.getProfile();
-    print('========>user ${user.toJson()}');
     await _userDao.saveUser(user);
     return user;
   }
@@ -65,5 +62,10 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> clearAuthentication() {
     return _userDao.clearAuthentication();
+  }
+
+  @override
+  Future<List<User>> loadUsers({Map<String, dynamic>? params}) {
+   return _userClient.loadUsers();
   }
 }
